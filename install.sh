@@ -99,6 +99,7 @@ if [[ "$choice" == [Yy]* ]]; then
   sudo git config --system status.short true
   sudo git config --system alias.assume-unchanged 'update-index --assume-unchanged'
   sudo git config --system alias.assume-changed 'update-index --no-assume-unchanged'
+  sudo gh auth setup-git
   # Transfer gh helper config to system config
   cat "$HOME/.gitconfig" >> "/usr/etc/gitconfig"
   # Clean up unnecessary file
@@ -128,6 +129,7 @@ else
   git config --global status.short true
   git config --global alias.assume-unchanged 'update-index --assume-unchanged'
   git config --global alias.assume-changed 'update-index --no-assume-unchanged'
+  gh auth setup-git
   echo -e "${GREEN}Git credentials configured globally${ENDCOLOR}."
 fi
 
@@ -136,10 +138,10 @@ read -rp "${GREEN}Would you like to install recommended packages? (Yes/No)${ENDC
 
 if [[ "$choice" == [Yy]* ]]; then
   # Install recommended packages
-  echo -e "${GREEN}Time to install Nala Package Manager, NodeJS, Python3-pip, pipx, Perl, Ruby, LuaRocks, LuaJIT, Golang, LazyGit, Ranger, RipGrep, fd-find, wget, gettext, libuv, Fuck, Timewarrior, Taskwarrior, Zoxide and htop${ENDCOLOR}."
+  echo -e "${GREEN}Time to install Nala Package Manager, NodeJS, Python3-pip, pipx, Perl, Ruby, LuaRocks, LuaJIT, Golang, LazyGit, Ranger, RipGrep, fd-find, wget, curl, gettext, libuv, Fuck, Timewarrior, Taskwarrior, Zoxide and htop${ENDCOLOR}."
   sleep 5
   sudo apt update && sudo apt install nala
-  sudo nala install nodejs npm python3-pip pipx ruby luarocks luajit golang ripgrep fd-find ranger wget gettext libuv1 thefuck timewarrior taskwarrior zoxide htop || error_exit "${YELLOW}Failed to install recommended packages${ENDCOLOR}."
+  sudo nala install nodejs npm python3-pip python3-nvim pipx ruby luarocks luajit golang ripgrep fd-find ranger wget curl gettext libuv1 thefuck timewarrior taskwarrior zoxide htop || error_exit "${YELLOW}Failed to install recommended packages${ENDCOLOR}."
   # Install LazyGit
   LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
   curl -Lo /lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
@@ -163,7 +165,6 @@ if [[ "$choice" == [Yy]* ]]; then
     sudo rm -rf /opt/nvim
     sudo tar -C /opt -xzf nvim-linux64.tar.gz
     rm nvim-linux64.tar.gz
-    echo 'export PATH="$PATH:/opt/nvim-linux64/bin"' >> ~/.zshrc
   }
 
   install_neovim || error_exit "${YELLOW}Failed to install Neovim${ENDCOLOR}."
@@ -195,10 +196,6 @@ fi
 # cpan App::cpanminus || error_exit "${YELLOW}Failed to install cpanminus${ENDCOLOR}."
 # cpanm -n Neovim::Ext || error_exit "${YELLOW}Failed to install neovim perl module${ENDCOLOR}."
 
-# Install LuaRocks packages for building Neovim
-# luarocks install mpack || error_exit "${YELLOW}Failed to install mpac${ENDCOLOR}."
-# luarocks install lpeg || error_exit "${YELLOW}Failed to install lpeg${ENDCOLOR}."
-
 # Prompt the user to choose if they want to install Logo-ls
 read -rp "${GREEN}Would you like to install logo-ls? (Yes/No)${ENDCOLOR}: " choice
 
@@ -228,12 +225,6 @@ if [[ "$choice" == [Yy]* ]]; then
 else
   echo -e "${YELLOW}Skipping installation of logo-ls${ENDCOLOR}."
 fi
-# Install MOTD
-# echo "${GREEN}Installing MOT${ENDCOLOR}."
-# sleep 2
-# rm /data/data/com.termux/files/usr/etc/motd
-# git clone https://github.com/GR3YH4TT3R93/termux-motd.git /data/data/com.termux/files/usr/etc/motd
-# echo "/data/data/com.termux/files/usr/etc/motd/init.sh" >> /data/data/com.termux/files/usr/etc/zprofile
 
 # Prompt the user to choose if they want to install firefox
 read -rp "${GREEN}Would you like to install Firefox? (Yes/No)${ENDCOLOR}: " choice
@@ -412,16 +403,12 @@ fi
 # Hide or delete README.md based on whether installed as bare repository or not
 # Check if the bare repository exists and is readable
 if [ -e "$FILE_PATH/dotfiles" ]; then
-  if [ -rw "$FILE_PATH/dotfiles" ]; then
-    echo "${GREEN}Hiding README.md and Installers in ~/.config${ENDCOLOR}."
-    echo "${GREEN}moving...${ENDCOLOR}"
-    mv README.md ~/.config/README.md || error_exit "${YELLOW}Failed to hide README.md${ENDCOLOR}."
-    mv autoinstall.sh ~/.config/autoinstall.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
-    mv install.sh ~/.config/install.sh || error_exit "${YELLOW}Failed to hide install.sh${ENDCOLOR}."
-    git --git-dir="$HOME/GitHub/dotfiles" --work-tree="$HOME" assume-unchanged README.md autoinstall.sh install.sh || error_exit "${YELLOW}Failed to hide README.md and Installers${ENDCOLOR}."
-  else
-    echo "${RED}File exists but is not readable or writable. Cannot execute Git command${ENDCOLOR}."
-  fi
+  echo "${GREEN}Hiding README.md and Installers in ~/.config${ENDCOLOR}."
+  echo "${GREEN}moving...${ENDCOLOR}"
+  mv README.md ~/.config/README.md || error_exit "${YELLOW}Failed to hide README.md${ENDCOLOR}."
+  mv autoinstall.sh ~/.config/autoinstall.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
+  mv install.sh ~/.config/install.sh || error_exit "${YELLOW}Failed to hide install.sh${ENDCOLOR}."
+  git --git-dir="$HOME/GitHub/dotfiles" --work-tree="$HOME" assume-unchanged README.md autoinstall.sh install.sh || error_exit "${YELLOW}Failed to hide README.md and Installers${ENDCOLOR}."
 else
   echo "${YELLOW}Deletinging README.md Installers and .git folder${ENDCOLOR}."
   echo "${GREEN}Removing...${ENDCOLOR}"
