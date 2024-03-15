@@ -144,10 +144,10 @@ if [[ "$choice" == [Yy]* ]]; then
   sudo nala install nodejs npm python3-pip python3-neovim pipx ruby luarocks luajit golang ripgrep fd-find ranger wget curl gettext libuv1 thefuck timewarrior taskwarrior zoxide btop || error_exit "${YELLOW}Failed to install recommended packages${ENDCOLOR}."
   # Install LazyGit
   LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-  curl -Lo /lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-  tar xf /lazygit.tar.gz
-  sudo install /lazygit /usr/local/bin
-  echo -e "${GREEN}Recommended packages installed successfully${ENDCOLOR}."
+  curl -Lo /lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" \
+    && tar xf /lazygit.tar.gz \
+    && sudo install /lazygit /usr/local/bin \
+    && echo -e "${GREEN}Recommended packages installed successfully${ENDCOLOR}."
 else
   echo -e "${YELLOW}Skipping installation of recommended packages${ENDCOLOR}."
 fi
@@ -161,14 +161,16 @@ if [[ "$choice" == [Yy]* ]]; then
   sleep 2
   # Install Neovim as a function
   install_neovim() {
-    curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
-    sudo rm -rf /opt/nvim
-    sudo tar -C /opt -xzf nvim-linux64.tar.gz
-    rm nvim-linux64.tar.gz
+    curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz \
+      && sudo rm -rf /opt/nvim \
+      && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
+      && rm nvim-linux64.tar.gz \
+      && sudo sh -c 'echo "fs.inotify.max_user_watches=100000" >> /etc/sysctl.conf' \
+      && sudo sh -c 'echo "fs.inotify.max_queued_events=100000" >> /etc/sysctl.conf' \
+      && echo -e "${GREEN}Neovim Nightly installed successfully${ENDCOLOR}."
   }
 
   install_neovim || error_exit "${YELLOW}Failed to install Neovim${ENDCOLOR}."
-  echo -e "${GREEN}Neovim Nightly installed successfully${ENDCOLOR}."
 else
   echo -e "${YELLOW}Skipping installation of Neovim Nightly${ENDCOLOR}."
 fi
@@ -208,14 +210,14 @@ if [[ "$choice" == [Yy]* ]]; then
   fi
   # Install Logo-ls
   install_logo_ls() {
-    # Check if Go is installed and install it if it isn't
-    git clone https://github.com/canta2899/logo-ls.git ~/GitHub/logo-ls
-    cd ~/GitHub/logo-ls
-    go build -o logo-ls .
-    sudo mv logo-ls /usr/bin
-    cd ~/
-    sudo rm -rf ~/go ~/GitHub/logo-ls
-    echo -e "${GREEN}logo-ls installed successfully${ENDCOLOR}."
+    cd /tmp \
+      && git clone https://github.com/canta2899/logo-ls.git \
+      && cd logo-ls \
+      && go build -o logo-ls . \
+      && sudo mv logo-ls /usr/bin \
+      && cd ~/ \
+      && sudo rm -rf ~/go \
+      && echo -e "${GREEN}logo-ls installed successfully${ENDCOLOR}."
   }
 
   install_logo_ls || error_exit "${YELLOW}Failed to install logo-ls${ENDCOLOR}."
@@ -231,16 +233,16 @@ if [[ "$choice" == [Yy]* ]]; then
   echo -e "${GREEN}Installing Firefox${ENDCOLOR}."
   sleep 2
   install_firefox() {
-    wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
-    gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}' || error_exit "${YELLOW}Failed to import the key fingerprint${ENDCOLOR}."
-    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null
-    echo '
-    Package: *
-    Pin: origin packages.mozilla.org
-    Pin-Priority: 1000
-    ' | sudo tee /etc/apt/preferences.d/mozilla
-    sudo nala install --update firefox -y
-    echo -e "${GREEN}Firefox installed successfully${ENDCOLOR}."
+    wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null \
+      && gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}' || error_exit "${YELLOW}Failed to import the key fingerprint${ENDCOLOR}." \
+      && echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
+      && echo '
+          Package: *
+          Pin: origin packages.mozilla.org
+          Pin-Priority: 1000
+          ' | sudo tee /etc/apt/preferences.d/mozilla \
+            && sudo nala install --update firefox -y \
+            && echo -e "${GREEN}Firefox installed successfully${ENDCOLOR}."
   }
   install_firefox || error_exit "${YELLOW}Failed to install Firefox${ENDCOLOR}."
 else
@@ -267,7 +269,7 @@ if [[ "$choice" == [Yy]* ]]; then
     echo -e "${GREEN}Installing Powerlevel10k${ENDCOLOR}."
     sleep 2
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k" || error_exit "${YELLOW}Failed to install Powerlevel10k${ENDCOLOR}."
-    else
+  else
     echo -e "${YELLOW}Skipping installation of Powerlevel10k${ENDCOLOR}."
     sed -i '/if \[\[ -r "\${XDG_CACHE_HOME:-\$HOME\/.cache}\/p10k-instant-prompt-\${(%):-%n}.zsh" \]\]; then/,/fi/{/fi/{N;d;};d;}' ~/.zshrc
     # Replace with default theme
@@ -385,7 +387,6 @@ else
     # Keep the included .zsh_aliases file
     echo -e "${GREEN}Keeping .zsh_aliases file${ENDCOLOR}."
     sleep 2
-    # Clear .zshrc file and replace with an if statement to include .zsh_aliases file
   else
     # Remove the included .zsh_aliases file and inclided if statement in .zshrc
     echo -e "${YELLOW}Removing .zsh_aliases file${ENDCOLOR}."

@@ -135,15 +135,19 @@ sleep 5
 sudo apt update && sudo apt install nala -y
 sudo nala install python3-pip python3-neovim pipx perl ruby luarocks luajit golang ripgrep fswatch fd-find ranger curl wget gettext libuv1 thefuck timewarrior taskwarrior zoxide btop -y || error_exit "${YELLOW}Failed to install packages${ENDCOLOR}."
 
+# Increase ionotify
+sudo sh -c 'echo "fs.inotify.max_user_watches=100000" >> /etc/sysctl.conf'
+sudo sh -c 'echo "fs.inotify.max_queued_events=100000" >> /etc/sysctl.conf'
+
 # Install Neovim as a function
 install_neovim() {
   echo "${GREEN}Installing Neovim${ENDCOLOR}."
   sleep 2
-  cd /tmp
-  curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
-  sudo rm -rf /opt/nvim
-  sudo tar -C /opt -xzf nvim-linux64.tar.gz
-  echo -e "${GREEN}Neovim installed successfully${ENDCOLOR}."
+  cd /tmp \
+    && curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz \
+    && sudo rm -rf /opt/nvim \
+    && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
+    && echo -e "${GREEN}Neovim installed successfully${ENDCOLOR}."
 }
 
 install_neovim || error_exit "${YELLOW}Failed to install Neovim${ENDCOLOR}."
@@ -159,10 +163,10 @@ install_lazygit() {
   sleep 2
   cd /tmp
   LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-  curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-  tar xf lazygit.tar.gz
-  sudo install lazygit /usr/local/bin
-  echo -e "${GREEN}LazyGit installed successfully${ENDCOLOR}."
+  curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" \
+    && tar xf lazygit.tar.gz \
+    && sudo install lazygit /usr/local/bin \
+    && echo -e "${GREEN}LazyGit installed successfully${ENDCOLOR}."
 }
 
 install_lazygit || error_exit "${YELLOW}Failed to install LazyGit${ENDCOLOR}."
@@ -171,13 +175,13 @@ install_lazygit || error_exit "${YELLOW}Failed to install LazyGit${ENDCOLOR}."
 install_logo_ls() {
   echo "${GREEN}Installing logo-ls${ENDCOLOR}."
   sleep 2
-  cd /tmp
-  git clone https://github.com/canta2899/logo-ls.git
-  cd logo-ls
-  go build -o logo-ls .
-  sudo mv logo-ls /usr/bin
-  sudo rm -rf ~/go
-  echo -e "${GREEN}logo-ls installed successfully${ENDCOLOR}."
+  cd /tmp \
+    && git clone https://github.com/canta2899/logo-ls.git \
+    && cd logo-ls \
+    && go build -o logo-ls . \
+    && sudo mv logo-ls /usr/bin \
+    && sudo rm -rf ~/go \
+    && echo -e "${GREEN}logo-ls installed successfully${ENDCOLOR}."
 }
 
 install_logo_ls || error_exit "${YELLOW}Failed to install logo-ls${ENDCOLOR}."
@@ -186,16 +190,16 @@ install_logo_ls || error_exit "${YELLOW}Failed to install logo-ls${ENDCOLOR}."
 install_firefox() {
   echo "${GREEN}Installing Firefox${ENDCOLOR}."
   sleep 2
-  wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
-  gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}' || error_exit "${YELLOW}Failed to import the key fingerprint${ENDCOLOR}."
-  echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null
-  echo '
-  Package: *
-  Pin: origin packages.mozilla.org
-  Pin-Priority: 1000
-  ' | sudo tee /etc/apt/preferences.d/mozilla
-  sudo nala install --update firefox -y
-  echo -e "${GREEN}Firefox installed successfully${ENDCOLOR}."
+  wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null \
+    && gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}' || error_exit "${YELLOW}Failed to import the key fingerprint${ENDCOLOR}." \
+    && echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null \
+    && echo '
+      Package: *
+      Pin: origin packages.mozilla.org
+      Pin-Priority: 1000
+      ' | sudo tee /etc/apt/preferences.d/mozilla \
+        && sudo nala install --update firefox -y \
+        && echo -e "${GREEN}Firefox installed successfully${ENDCOLOR}."
 }
 
 install_firefox || error_exit "${YELLOW}Failed to install Firefox${ENDCOLOR}."
