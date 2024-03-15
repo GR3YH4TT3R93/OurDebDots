@@ -13,4 +13,4 @@ npm install -g pnpm neovim
 # Clean up
 echo "Cleaning up"
 rm -rf ~/.config/scripts/after.sh
-sed -i '/if \[ -f ~\/\.config\/scripts\/after\.sh \]; then/,/fi/d' ~/.zshrc
+sed -i '/if \[ -f ~\/\.config\/scripts\/after\.sh \]; then/,/fi/{/fi/{N;d;};d;}' ~/.zshrc
