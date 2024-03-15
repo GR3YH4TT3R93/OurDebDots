@@ -285,7 +285,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh-Auto-Suggestions
     echo -e "${GREEN}Installing Zsh-Auto-Suggestions${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions" || error_exit "${YELLOW}Failed to install zsh-autosuggestions${ENDCOLOR}."
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions" || error_exit "${YELLOW}Failed to install zsh-autosuggestions${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Auto-Suggestions${ENDCOLOR}."
     # Remove the line Zsh-Auto-Suggestions from .zshrc
@@ -299,7 +299,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh-Completions
     echo -e "${GREEN}Installing Zsh-Completions${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/zsh-users/zsh-completions "$ZSH_CUSTOM/plugins/zsh-completions" || error_exit "${YELLOW}Failed to install zsh-completions${ENDCOLOR}."
+    git clone --depth=1 https://github.com/zsh-users/zsh-completions "$ZSH_CUSTOM/plugins/zsh-completions" || error_exit "${YELLOW}Failed to install zsh-completions${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Completions${ENDCOLOR}."
     sed -i '/zsh-completions/d' ~/.zshrc
@@ -312,7 +312,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh-History-Substring-Search
     echo -e "${GREEN}Installing Zsh-History-Substring-Search${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/zsh-users/zsh-history-substring-search "$ZSH_CUSTOM/plugins/zsh-history-substring-search" || error_exit "${YELLOW}Failed to install zsh-history-substring-search${ENDCOLOR}."
+    git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search "$ZSH_CUSTOM/plugins/zsh-history-substring-search" || error_exit "${YELLOW}Failed to install zsh-history-substring-search${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-History-Substring-Search${ENDCOLOR}."
     sed -i '/zsh-history-substring-search/d' ~/.zshrc
@@ -325,7 +325,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh-Syntax-Highlighting
     echo -e "${GREEN}Installing Zsh-Syntax-Highlighting${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" || error_exit "${YELLOW}Failed to install zsh-syntax-highlighting${ENDCOLOR}."
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" || error_exit "${YELLOW}Failed to install zsh-syntax-highlighting${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Syntax-Highlighting${ENDCOLOR}."
     sed -i '/zsh-syntax-highlighting/d' ~/.zshrc
@@ -338,7 +338,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Git-Flow-Completions
     echo -e "${GREEN}Installing Git-Flow-Completions${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/bobthecow/git-flow-completion "$ZSH_CUSTOM/plugins/git-flow-completion" || error_exit "${YELLOW}Failed to install git-flow-completion${ENDCOLOR}."
+    git clone --depth=1 https://github.com/bobthecow/git-flow-completion "$ZSH_CUSTOM/plugins/git-flow-completion" || error_exit "${YELLOW}Failed to install git-flow-completion${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Git-Flow-Completions${ENDCOLOR}."
     sed -i '/git-flow-completion/d' ~/.zshrc
@@ -351,7 +351,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh-Vi-Mode
     echo -e "${GREEN}Installing Zsh-Vi-Mode${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/jeffreytse/zsh-vi-mode "$ZSH_CUSTOM/plugins/zsh-vi-mode" || error_exit "${YELLOW}Failed to install Zsh-Vi-Mode${ENDCOLOR}."
+    git clone --depth=1 https://github.com/jeffreytse/zsh-vi-mode "$ZSH_CUSTOM/plugins/zsh-vi-mode" || error_exit "${YELLOW}Failed to install Zsh-Vi-Mode${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Vi-Mode${ENDCOLOR}."
     sed -i '/zsh-vi-mode/d' ~/.zshrc
@@ -364,7 +364,7 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh-Interactive-Cd
     echo -e "${GREEN}Installing Magic-Enter${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/GR3YH4TT3R93/magic-enter "$ZSH_CUSTOM/plugins/magic-enter" || error_exit "${YELLOW}Failed to install Magic-Enter${ENDCOLOR}."
+    git clone --depth=1 https://github.com/GR3YH4TT3R93/magic-enter "$ZSH_CUSTOM/plugins/magic-enter" || error_exit "${YELLOW}Failed to install Magic-Enter${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Magic-Enter${ENDCOLOR}."
     sed -i '/magic-enter/d' ~/.zshrc
@@ -377,9 +377,10 @@ if [[ "$choice" == [Yy]* ]]; then
     # Install Zsh NVM
     echo -e "${GREEN}Installing Zsh NVM${ENDCOLOR}."
     sleep 2
-    git clone https://github.com/lukechilds/zsh-nvm "$ZSH_CUSTOM/plugins/zsh-nvm" || error_exit "${YELLOW}Failed to install Zsh NVM${ENDCOLOR}."
-else
-  echo -e "${YELLOW}Skipping installation of Oh-My-Zsh${ENDCOLOR}."
+    git clone --depth=1 https://github.com/lukechilds/zsh-nvm "$ZSH_CUSTOM/plugins/zsh-nvm" || error_exit "${YELLOW}Failed to install Zsh NVM${ENDCOLOR}."
+  else
+    echo -e "${YELLOW}Skipping installation of Oh-My-Zsh${ENDCOLOR}."
+  fi
 
   # Prompt the user to choose if they want to keep the included .zsh_aliases file
   read -rp "${GREEN}Would you like to keep the included .zsh_aliases file? (Yes/No)${ENDCOLOR}: " choice
