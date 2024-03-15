@@ -254,6 +254,7 @@ if [[ "$choice" == [Yy]* ]]; then
   # Install Oh My Zsh
   echo "${GREEN}Installing Oh-My-Zsh${ENDCOLOR}."
   sleep 2
+  export ZSH="$HOME/.config/oh-my-zsh"
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/GR3YH4TT3R93/ohmyzsh/master/tools/install.sh)"
   # Clean up excess files
   rm ".shell.pre-oh-my-zsh"
@@ -268,7 +269,7 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k" || error_exit "${YELLOW}Failed to install Powerlevel10k${ENDCOLOR}."
     else
     echo -e "${YELLOW}Skipping installation of Powerlevel10k${ENDCOLOR}."
-    sed -i '/if \[\[ -r "\${XDG_CACHE_HOME:-\$HOME\/.cache}\/p10k-instant-prompt-\${(%):-%n}.zsh" \]\]; then/,/fi/d' ~/.zshrc
+    sed -i '/if \[\[ -r "\${XDG_CACHE_HOME:-\$HOME\/.cache}\/p10k-instant-prompt-\${(%):-%n}.zsh" \]\]; then/,/fi/{/fi/{N;d;};d;}' ~/.zshrc
     # Replace with default theme
     sed -i 's/ZSH_THEME="powerlevel10k\/powerlevel10k"/ZSH_THEME="robbyrussell"/' ~/.zshrc
     rm -rf ~/.p10k.zsh
@@ -389,7 +390,7 @@ else
     # Remove the included .zsh_aliases file and inclided if statement in .zshrc
     echo -e "${YELLOW}Removing .zsh_aliases file${ENDCOLOR}."
     rm ~/.zsh_aliases
-    sed -i '/if \[\[ -r "\$HOME\/.zsh_aliases" \]\]; then/,/fi/d' ~/.zshrc
+    sed -i '/if \[\[ -r "\$HOME\/.zsh_aliases" \]\]; then/,/fi/{/fi/{N;d;};d;}' ~/.zshrc
   fi
 fi
 

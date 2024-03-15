@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install script for OurDebDots
 # Set custom variables
-ZSH_CUSTOM=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}
+ZSH_CUSTOM=${ZSH_CUSTOM:-$HOME/.config/oh-my-zsh/custom}
 FILE_PATH="$HOME/GitHub"
 RED=$'\e[31m'
 GREEN=$'\e[32m'
@@ -203,6 +203,7 @@ install_firefox || error_exit "${YELLOW}Failed to install Firefox${ENDCOLOR}."
 # Install Oh My Zsh
 echo "${GREEN}Installing Oh-My-Zsh${ENDCOLOR}."
 sleep 2
+export ZSH="$HOME/.config/oh-my-zsh"
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/GR3YH4TT3R93/ohmyzsh/master/tools/install.sh)"
 
 # Clean up excess files
