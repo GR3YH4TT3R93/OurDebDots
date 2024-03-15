@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install script for My Termux Dotfiles
+# Install script for OurDebDots
 # Set custom variables
 ZSH_CUSTOM=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}
 FILE_PATH="$HOME/GitHub"
@@ -138,10 +138,10 @@ read -rp "${GREEN}Would you like to install recommended packages? (Yes/No)${ENDC
 
 if [[ "$choice" == [Yy]* ]]; then
   # Install recommended packages
-  echo -e "${GREEN}Time to install Nala Package Manager, NodeJS, Python3-pip, pipx, Perl, Ruby, LuaRocks, LuaJIT, Golang, LazyGit, Ranger, RipGrep, fd-find, wget, curl, gettext, libuv, Fuck, Timewarrior, Taskwarrior, Zoxide and htop${ENDCOLOR}."
+  echo -e "${GREEN}Time to install Nala Package Manager, Python3-pip, Python3-neovim, pipx, Perl, Ruby, LuaRocks, LuaJIT, Golang, LazyGit, Ranger, RipGrep, fd-find, wget, curl, gettext, libuv, Fuck, Timewarrior, Taskwarrior, Zoxide and btop${ENDCOLOR}."
   sleep 5
   sudo apt update && sudo apt install nala
-  sudo nala install nodejs npm python3-pip python3-nvim pipx ruby luarocks luajit golang ripgrep fd-find ranger wget curl gettext libuv1 thefuck timewarrior taskwarrior zoxide htop || error_exit "${YELLOW}Failed to install recommended packages${ENDCOLOR}."
+  sudo nala install nodejs npm python3-pip python3-neovim pipx ruby luarocks luajit golang ripgrep fd-find ranger wget curl gettext libuv1 thefuck timewarrior taskwarrior zoxide btop || error_exit "${YELLOW}Failed to install recommended packages${ENDCOLOR}."
   # Install LazyGit
   LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
   curl -Lo /lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
@@ -169,9 +169,6 @@ if [[ "$choice" == [Yy]* ]]; then
 
   install_neovim || error_exit "${YELLOW}Failed to install Neovim${ENDCOLOR}."
   echo -e "${GREEN}Neovim Nightly installed successfully${ENDCOLOR}."
-  # Install pynvim, pnpm and neovim npm package, and neovim gem package
-  pip install pynvim || error_exit "${YELLOW}Failed to install pynvim${ENDCOLOR}."
-  npm install -g pnpm neovim || error_exit "${YELLOW}Failed to install neovim npm package${ENDCOLOR}."
 else
   echo -e "${YELLOW}Skipping installation of Neovim Nightly${ENDCOLOR}."
 fi
@@ -271,6 +268,11 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k" || error_exit "${YELLOW}Failed to install Powerlevel10k${ENDCOLOR}."
     else
     echo -e "${YELLOW}Skipping installation of Powerlevel10k${ENDCOLOR}."
+    sed -i '/if \[\[ -r "\${XDG_CACHE_HOME:-\$HOME\/.cache}\/p10k-instant-prompt-\${(%):-%n}.zsh" \]\]; then/,/fi/d' ~/.zshrc
+    # Replace with default theme
+    sed -i 's/ZSH_THEME="powerlevel10k\/powerlevel10k"/ZSH_THEME="robbyrussell"/' ~/.zshrc
+    rm -rf ~/.p10k.zsh
+    rm -rf "$ZSH_CUSTOM/themes/powerlevel10k"
   fi
 
   # Pronpt the user to choose if they want to install Zsh-Auto-Suggestions
@@ -283,6 +285,8 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions" || error_exit "${YELLOW}Failed to install zsh-autosuggestions${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Auto-Suggestions${ENDCOLOR}."
+    # Remove the line Zsh-Auto-Suggestions from .zshrc
+    sed -i '/zsh-autosuggestions/d' ~/.zshrc
   fi
 
   # Prompt the user to choose if they want to install Zsh-Completions
@@ -295,6 +299,7 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/zsh-users/zsh-completions "$ZSH_CUSTOM/plugins/zsh-completions" || error_exit "${YELLOW}Failed to install zsh-completions${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Completions${ENDCOLOR}."
+    sed -i '/zsh-completions/d' ~/.zshrc
   fi
 
   # Prompt the user to choose if they want to install Zsh-History-Substring-Search
@@ -307,6 +312,7 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/zsh-users/zsh-history-substring-search "$ZSH_CUSTOM/plugins/zsh-history-substring-search" || error_exit "${YELLOW}Failed to install zsh-history-substring-search${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-History-Substring-Search${ENDCOLOR}."
+    sed -i '/zsh-history-substring-search/d' ~/.zshrc
   fi
 
   # Prompt the user to choose if they want to install Zsh-Syntax-Highlighting
@@ -319,6 +325,7 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" || error_exit "${YELLOW}Failed to install zsh-syntax-highlighting${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Syntax-Highlighting${ENDCOLOR}."
+    sed -i '/zsh-syntax-highlighting/d' ~/.zshrc
   fi
 
   # Prompt the user to choose if they want to install Git-Flow-Completions
@@ -331,6 +338,7 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/bobthecow/git-flow-completion "$ZSH_CUSTOM/plugins/git-flow-completion" || error_exit "${YELLOW}Failed to install git-flow-completion${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Git-Flow-Completions${ENDCOLOR}."
+    sed -i '/git-flow-completion/d' ~/.zshrc
   fi
 
   # Prompt the user to choose if they want to install Zsh-Vi-Mode
@@ -343,6 +351,7 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/jeffreytse/zsh-vi-mode "$ZSH_CUSTOM/plugins/zsh-vi-mode" || error_exit "${YELLOW}Failed to install Zsh-Vi-Mode${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Zsh-Vi-Mode${ENDCOLOR}."
+    sed -i '/zsh-vi-mode/d' ~/.zshrc
   fi
 
   # Prompt the user to choose if they want to install Zsh-Interactive-Cd
@@ -355,13 +364,33 @@ if [[ "$choice" == [Yy]* ]]; then
     git clone https://github.com/GR3YH4TT3R93/magic-enter "$ZSH_CUSTOM/plugins/magic-enter" || error_exit "${YELLOW}Failed to install Magic-Enter${ENDCOLOR}."
   else
     echo -e "${YELLOW}Skipping installation of Magic-Enter${ENDCOLOR}."
+    sed -i '/magic-enter/d' ~/.zshrc
   fi
+
+  # Prompt the user to choose if they want to install Zsh NVM
+  read -rp "${GREEN}Would you like to install Zsh NVM? (Yes/No)${ENDCOLOR}: " choice
+  sleep 2
+  if [[ "$choice" == [Yy]* ]]; then
+    # Install Zsh NVM
+    echo -e "${GREEN}Installing Zsh NVM${ENDCOLOR}."
+    sleep 2
+    git clone https://github.com/lukechilds/zsh-nvm "$ZSH_CUSTOM/plugins/zsh-nvm" || error_exit "${YELLOW}Failed to install Zsh NVM${ENDCOLOR}."
 else
   echo -e "${YELLOW}Skipping installation of Oh-My-Zsh${ENDCOLOR}."
-  # Clear .zshrc file
-  echo "if [ -f ~/.zsh_aliases ]; then
-    . ~/.zsh_aliases
-fi" > ~/.zshrc
+
+  # Prompt the user to choose if they want to keep the included .zsh_aliases file
+  read -rp "${GREEN}Would you like to keep the included .zsh_aliases file? (Yes/No)${ENDCOLOR}: " choice
+  if [[ "$choice" == [Yy]* ]]; then
+    # Keep the included .zsh_aliases file
+    echo -e "${GREEN}Keeping .zsh_aliases file${ENDCOLOR}."
+    sleep 2
+    # Clear .zshrc file and replace with an if statement to include .zsh_aliases file
+  else
+    # Remove the included .zsh_aliases file and inclided if statement in .zshrc
+    echo -e "${YELLOW}Removing .zsh_aliases file${ENDCOLOR}."
+    rm ~/.zsh_aliases
+    sed -i '/if \[\[ -r "\$HOME\/.zsh_aliases" \]\]; then/,/fi/d' ~/.zshrc
+  fi
 fi
 
 # Prompt the user to choose if they want to install Fira Code Nerd Font
@@ -403,12 +432,12 @@ fi
 # Hide or delete README.md based on whether installed as bare repository or not
 # Check if the bare repository exists and is readable
 if [ -e "$FILE_PATH/dotfiles" ]; then
-  echo "${GREEN}Hiding README.md and Installers in ~/.config${ENDCOLOR}."
+  echo "${GREEN}Hiding README.md and Installers in ~/.config/scripts${ENDCOLOR}."
   echo "${GREEN}moving...${ENDCOLOR}"
-  mv README.md ~/.config/README.md || error_exit "${YELLOW}Failed to hide README.md${ENDCOLOR}."
-  mv autoinstall.sh ~/.config/autoinstall.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
-  mv install.sh ~/.config/install.sh || error_exit "${YELLOW}Failed to hide install.sh${ENDCOLOR}."
-  git --git-dir="$HOME/GitHub/dotfiles" --work-tree="$HOME" assume-unchanged README.md autoinstall.sh install.sh || error_exit "${YELLOW}Failed to hide README.md and Installers${ENDCOLOR}."
+  mv README.md ~/.config/scripts/README.md || error_exit "${YELLOW}Failed to hide README.md${ENDCOLOR}."
+  mv autoinstall.sh ~/.config/scripts/autoinstall.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
+  mv install.sh ~/.config/scripts/install.sh || error_exit "${YELLOW}Failed to hide install.sh${ENDCOLOR}."
+  git --git-dir="$HOME/GitHub/dotfiles" --work-tree="$HOME" assume-unchanged README.md autoinstall.sh install.sh || error_exit "${YELLOW}Failed to ignore changes to README.md and Installers${ENDCOLOR}."
 else
   echo "${YELLOW}Deletinging README.md Installers and .git folder${ENDCOLOR}."
   echo "${GREEN}Removing...${ENDCOLOR}"

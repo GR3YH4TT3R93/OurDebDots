@@ -10,6 +10,7 @@ fi
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export NVM_DIR="$HOME/.local/share/nvm"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -92,6 +93,7 @@ plugins=(
   zsh-autosuggestions
   zsh-completions
   zsh-interactive-cd
+  zsh-nvm
   zsh-vi-mode
   zsh-syntax-highlighting
   zsh-history-substring-search
@@ -162,6 +164,9 @@ if [ -f ~/.zprofile ]; then
     . ~/.zprofile
 fi
 
+if [ -f ~/.config/scripts/after.sh ]; then
+    . ~/.config/scripts/after.sh
+fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -183,7 +188,7 @@ export PATH="$PATH:/opt/nvim-linux64/bin"
 eval $(thefuck --alias)
 
 # pnpm
-export PNPM_HOME="/usr/local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install script for My Termux Dotfiles
+# Install script for OurDebDots
 # Set custom variables
 ZSH_CUSTOM=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}
 FILE_PATH="$HOME/GitHub"
@@ -48,10 +48,13 @@ read -rp "${GREEN}Enter a name you would like associated with the SSH key for ea
 read -rp "${GREEN}Would you like to set your Git configuration system-wide? (Yes/No)${ENDCOLOR}: " choice
 
 # Set Up SSH Key
-if [[ ! -f ~/.ssh/"$key_title" ]]; then
+if [[ ! -f '~/.ssh/"$key_title"' ]]; then
   # Generate an Ed25519 SSH key pair
   ssh-keygen -f ~/.ssh/"$key_title" -t ed25519 -C "$email"
   # Check if an SSH key pair already exists
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/"$key_title"
+else
   eval "$(ssh-agent -s)"
   ssh-add ~/.ssh/"$key_title"
 fi
@@ -125,28 +128,26 @@ else
   echo -e "${GREEN}Git credentials configured globally${ENDCOLOR}."
 fi
 
-echo -e "${GREEN}Time to install Nala Package Manager, NodeJS, npm, Python3-pip, pipx, Perl, Ruby, LuaRocks, LuaJIT, Golang, LazyGit, Ranger, RipGrep, fd-find, wget, curl, gettext, logo-ls, libuv1, Fuck, Timewarrior, Taskwarrior, Zoxide and htop${ENDCOLOR}."
+echo -e "${GREEN}Time to install Nala Package Manager, Python3-pip, Python3-neovim, pipx, Perl, Ruby, LuaRocks, LuaJIT, Golang, LazyGit, Ranger, RipGrep, fswatch, fd-find, wget, curl, gettext, logo-ls, libuv1, Fuck, Timewarrior, Taskwarrior, Zoxide and btop${ENDCOLOR}."
 sleep 5
 
 # Install Nala Package Manager, Z Shell, Neovim, NodeJS, Python-pip, Ruby, wget, Timewarrior, Taskwarrior, htop
 sudo apt update && sudo apt install nala -y
-sudo nala install nodejs npm python3-pip python3-nvim pipx perl ruby luarocks luajit golang ripgrep fd-find ranger curl wget gettext libuv1 thefuck timewarrior taskwarrior zoxide htop -y || error_exit "${YELLOW}Failed to install packages${ENDCOLOR}."
+sudo nala install python3-pip python3-neovim pipx perl ruby luarocks luajit golang ripgrep fswatch fd-find ranger curl wget gettext libuv1 thefuck timewarrior taskwarrior zoxide btop -y || error_exit "${YELLOW}Failed to install packages${ENDCOLOR}."
 
 # Install Neovim as a function
 install_neovim() {
   echo "${GREEN}Installing Neovim${ENDCOLOR}."
   sleep 2
+  cd /tmp
   curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
   sudo rm -rf /opt/nvim
   sudo tar -C /opt -xzf nvim-linux64.tar.gz
-  rm nvim-linux64.tar.gz
   echo -e "${GREEN}Neovim installed successfully${ENDCOLOR}."
 }
 
 install_neovim || error_exit "${YELLOW}Failed to install Neovim${ENDCOLOR}."
 
-# Install pnpm and neovim npm package, and neovim gem package
-sudo npm install -g pnpm neovim || error_exit "${YELLOW}Failed to install neovim npm package${ENDCOLOR}."
 # gem install neovim || error_exit "${YELLOW}Failed to install neovim gem package${ENDCOLOR}."
 # gem update --system || error_exit "${YELLOW}Failed to update gem${ENDCOLOR}."
 # cpan App::cpanminus || error_exit "${YELLOW}Failed to install cpanminus${ENDCOLOR}."
@@ -156,11 +157,11 @@ sudo npm install -g pnpm neovim || error_exit "${YELLOW}Failed to install neovim
 install_lazygit() {
   echo "${GREEN}Installing LazyGit${ENDCOLOR}."
   sleep 2
+  cd /tmp
   LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
   curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
   tar xf lazygit.tar.gz
   sudo install lazygit /usr/local/bin
-  rm -rf lazygit.tar.gz lazygit
   echo -e "${GREEN}LazyGit installed successfully${ENDCOLOR}."
 }
 
@@ -170,12 +171,12 @@ install_lazygit || error_exit "${YELLOW}Failed to install LazyGit${ENDCOLOR}."
 install_logo_ls() {
   echo "${GREEN}Installing logo-ls${ENDCOLOR}."
   sleep 2
-  git clone https://github.com/canta2899/logo-ls.git ~/GitHub/logo-ls
-  cd ~/GitHub/logo-ls
+  cd /tmp
+  git clone https://github.com/canta2899/logo-ls.git
+  cd logo-ls
   go build -o logo-ls .
   sudo mv logo-ls /usr/bin
-  cd ~/
-  sudo rm -rf ~/go ~/GitHub/logo-ls
+  sudo rm -rf ~/go
   echo -e "${GREEN}logo-ls installed successfully${ENDCOLOR}."
 }
 
@@ -249,6 +250,11 @@ echo -e "${GREEN}Installing Magic-Enter${ENDCOLOR}."
 sleep 1
 git clone https://github.com/GR3YH4TT3R93/magic-enter "$ZSH_CUSTOM/plugins/magic-enter" || error_exit "${YELLOW}Failed to install magic-enter${ENDCOLOR}."
 
+# Zsh Nvm
+echo -e "${GREEN}Installing Zsh Nvm${ENDCOLOR}."
+sleep 1
+git clone https://github.com/lukechilds/zsh-nvm "$ZSH_CUSTOM/plugins/zsh-nvm" || error_exit "${YELLOW}Failed to install zsh-nvm${ENDCOLOR}."
+
 # Install Fira Code Nerd Font
 install_fira_code() {
   # Define variables
@@ -283,11 +289,11 @@ install_fira_code || error_exit "${YELLOW}Failed to install FiraCode Nerd Fonts$
 # Hide or delete README.md based on whether installed as bare repository or not
 # Check if the bare repository exists and is readable
 if [ -e "$FILE_PATH/dotfiles" ]; then
-  echo "${GREEN}Hiding README.md and Installers in ~/.config${ENDCOLOR}."
+  echo "${GREEN}Hiding README.md and Installers in ~/.config/scripts${ENDCOLOR}."
   echo "${GREEN}moving...${ENDCOLOR}"
-  mv README.md ~/.config/README.md || error_exit "${YELLOW}Failed to hide README.md${ENDCOLOR}."
-  mv autoinstall.sh ~/.config/autoinstall.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
-  mv install.sh ~/.config/install.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
+  mv README.md ~/.config/scripts/README.md || error_exit "${YELLOW}Failed to hide README.md${ENDCOLOR}."
+  mv autoinstall.sh ~/.config/scripts/autoinstall.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
+  mv install.sh ~/.config/scripts/install.sh || error_exit "${YELLOW}Failed to hide autoinstall.sh${ENDCOLOR}."
   git --git-dir="$HOME/GitHub/dotfiles" --work-tree="$HOME" assume-unchanged README.md autoinstall.sh install.sh || error_exit "${YELLOW}Failed to hide README.md and Installers${ENDCOLOR}."
 else
   echo "${YELLOW}Deletinging README.md Installers and .git folder${ENDCOLOR}."
