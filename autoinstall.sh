@@ -135,6 +135,9 @@ sleep 5
 sudo apt update && sudo apt install nala -y
 sudo nala install python3-pip python3-neovim pipx perl ruby luarocks luajit golang ripgrep fswatch fd-find ranger curl wget gettext libuv1 thefuck timewarrior taskwarrior zoxide btop -y || error_exit "${YELLOW}Failed to install packages${ENDCOLOR}."
 
+# Add Nala Zsh Completions
+nala --install-completions zsh
+
 # Increase ionotify
 sudo sh -c 'echo "fs.inotify.max_user_watches=100000" >> /etc/sysctl.conf'
 sudo sh -c 'echo "fs.inotify.max_queued_events=100000" >> /etc/sysctl.conf'
@@ -210,6 +213,7 @@ install_wezterm() {
   sleep 2
   curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg \
     && echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list \
+    && sudo nala update \
     && sudo nala install wezterm -y \
     && echo -e "${GREEN}WezTerm installed successfully${ENDCOLOR}."
 }

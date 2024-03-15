@@ -142,6 +142,8 @@ if [[ "$choice" == [Yy]* ]]; then
   sleep 5
   sudo apt update && sudo apt install nala
   sudo nala install nodejs npm python3-pip python3-neovim pipx ruby luarocks luajit golang ripgrep fd-find ranger wget curl gettext libuv1 thefuck timewarrior taskwarrior zoxide btop || error_exit "${YELLOW}Failed to install recommended packages${ENDCOLOR}."
+  # Install Nala Completions
+  nala --install-completions zsh
   # Install LazyGit
   LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
   curl -Lo /lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" \
