@@ -251,6 +251,25 @@ else
   echo -e "${YELLOW}Skipping installation of Firefox${ENDCOLOR}."
 fi
 
+# Prompt the user to choose if they want to install WezTerm
+read -rp "${GREEN}Would you like to install WezTerm? (Yes/No)${ENDCOLOR}: " choice
+
+if [[ "$choice" == [Yy]* ]]; then
+  # Install WezTerm
+  echo -e "${GREEN}Installing WezTerm${ENDCOLOR}."
+  sleep 2
+  install_wezterm() {
+  curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg \
+    && echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list \
+    && sudo nala update \
+    && sudo nala install --update wezterm -y \
+    && echo -e "${GREEN}WezTerm installed successfully${ENDCOLOR}."
+  }
+  install_wezterm || error_exit "${YELLOW}Failed to install WezTerm${ENDCOLOR}."
+else
+  echo -e "${YELLOW}Skipping installation of WezTerm${ENDCOLOR}."
+fi
+
 # Prompt the user to choose if they want to install oh-my-zsh
 read -rp "${GREEN}Would you like to install Oh-My-Zsh? (Yes/No)${ENDCOLOR}: " choice
 
