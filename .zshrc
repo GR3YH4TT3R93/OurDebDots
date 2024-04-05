@@ -195,3 +195,7 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Enable EsLint flat config support for Eslint_d
+# Comment out to use legacy config
+export ESLINT_USE_FLAT_CONFIG=true
