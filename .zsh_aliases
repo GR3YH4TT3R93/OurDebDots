@@ -41,6 +41,7 @@ alias pad='pnpm add -D' # PNPM Add Dev Package
 alias pag='pnpm add -g' # PNPM Add Global Package
 alias pb='pnpm build' # PNPM Create Bundle Package
 alias pcl='pnpm config list' # PNPM Config List
+alias pex='pnpm exec' # PNPM Execute Command
 alias pi='pnpm install' # PNPM Install from package.json
 alias pid='pnpm install -D' # PNPM Install Dev Dependency
 alias pig='pnpm install -g' # PNPM Install Global Package
@@ -64,6 +65,7 @@ alias plf='pnpm lintfix' # Run Prettier & ESLint, Fix Errors
 alias pt='pnpm test' # PNPM Run Test
 alias pau='pnpm audit' # PNPM Audit Vuln Deps
 alias pauf='pnpm audit --fix' # PNPM Fix Vuln Deps
+alias px='pnpx' # PNPX CLI Tool
 
 # Nuxt CLI Tool PNPM Aliases
 alias pnx='pnpm nuxi' # Nuxt CLI Tool
@@ -134,6 +136,6 @@ alias f='ranger' #The better File Manager
 alias tm='tmux' # Terminal Multiplexer
 alias ghb='cd ~/GitHub' # Jump to GitHub Projects
 alias ct='clear' # Clear Terminal
-alias cl='zsh /data/data/com.termux/files/usr/etc/motd/init.sh' # Clear Terminal Fancily
+alias cl='clear && neofetch' # Clear Terminal Fancily
 alias sudo='sudo ' # Clear Terminal
 alias neoup='~/.config/scripts/neovim_updater.sh' # Update Neovim
